@@ -2,28 +2,18 @@ import ctypes
 import Metal
 import objc
 import struct
-
-add_kernel = '''
-#include <metal_stdlib>
-
-using namespace metal;
-
-kernel 
-void add (
-  device const float* input1,
-  device const float* input2,
-  device float* result,
-  uint thread_id [[thread_position_in_grid]])
-{
-  result[thread_id] = input1[thread_id] + input2[thread_id];
-}
-'''
+from tensor import Tensor
 
 arr_sz = 8
 inp1 = [float(1.0) for i in range(arr_sz)]
 inp2 = [float(4.0) for i in range(arr_sz)]
 
 if __name__ == "__main__":
+  f = Tensor([1, 2, 3])
+
+  with open("add_kernel.metal", "r") as f:
+    add_kernel = f.read()
+
   c_arr_type = ctypes.c_float * arr_sz
 
   res_arr  = c_arr_type()
